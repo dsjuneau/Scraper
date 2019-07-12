@@ -43,12 +43,19 @@
 <div class="list-group">
     {{#if articles}}
     {{#each articles}}
-    <a href="{{link}}" class="list-group-item list-group-item-action">
-        {{title}}
-    </a>
+
+
+    <li class="list-group-item"> <a href="{{link}}">
+            {{title}}
+        </a>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-info btn-sm mx-3">Notes</button>
+            <button type="button" class="btn btn-outline-danger btn-sm">Delete</button>
+        </div>
+    </li>
     {{/each}}
     {{else}}
-    <p class="list-group-item list-group-item-action">
+    <p class="list-group-item">
         There are no saved articles.
     </p>
     {{/if}}

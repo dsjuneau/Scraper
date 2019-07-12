@@ -21,13 +21,13 @@ mongoose.connect(MONGODBURI, {
 
 // Routes
 
+// Completed route for loading the initial page and any saved database items
 app.get("/", function(req, res) {
   db.Article.find({})
     .then(function(dbArticle) {
       var articles = {
         articles: dbArticle
       };
-
       res.render("index", articles);
     })
     .catch(function(err) {
@@ -35,6 +35,7 @@ app.get("/", function(req, res) {
     });
 });
 
+//Completed route and async function for checking if the article is already stored.
 app.get("/api/scrape", storeInDb);
 
 async function storeInDb(req, res) {
@@ -42,7 +43,6 @@ async function storeInDb(req, res) {
   var $ = cheerio.load(response.data);
   var numArticles = 0;
   let rawArticles = $("article h2");
-
   for (var i = 0; i < rawArticles.length; i++) {
     var result = {};
     result.title = $(rawArticles[i])
@@ -63,17 +63,6 @@ async function storeInDb(req, res) {
   console.log(numArticles);
   res.send({ number: numArticles });
 }
-
-// Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
-  db.Article.find({})
-    .then(function(dbArticle) {
-      res.json(dbArticle);
-    })
-    .catch(function(err) {
-      res.json(err);
-    });
-});
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
