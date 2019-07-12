@@ -20,7 +20,6 @@ $(document).on("click", "p", function() {
     method: "GET",
     url: "/articles/" + thisId
   }).then(function(data) {
-    console.log(data);
     $("#notes").append("<h2>" + data.title + "</h2>");
     $("#notes").append("<input id='titleinput' name='title' >");
     $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
@@ -46,7 +45,6 @@ $(document).on("click", "#savenote", function() {
       body: $("#bodyinput").val()
     }
   }).then(function(data) {
-    console.log(data);
     $("#notes").empty();
   });
 
@@ -59,9 +57,15 @@ function scrape(event) {
   $.ajax({
     method: "GET",
     url: "/api/scrape"
-  }).then(function() {
+  }).then(function(res) {
+    console.log(res);
+    $("#num-articles").html(res.number);
     $("#saved").modal("show");
   });
 }
 
 $("#scrape").on("click", scrape);
+
+$("#saved").on("hidden.bs.modal", function() {
+  location.reload(true);
+});

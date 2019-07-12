@@ -22,33 +22,47 @@ mongoose.connect(MONGODBURI, {
 // Routes
 
 app.get("/", function(req, res) {
-  res.render("index");
-});
+  db.Article.find({})
+    .then(function(dbArticle) {
+      var articles = {
+        articles: dbArticle
+      };
 
-app.get("/api/scrape", function(req, res) {
-  axios.get("http://www.echojs.com/").then(function(response) {
-    var $ = cheerio.load(response.data);
-    $("article h2").each(function(i, element) {
-      var result = {};
-      result.title = $(this)
-        .children("a")
-        .text();
-      result.link = $(this)
-        .children("a")
-        .attr("href");
-      // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
-        .then(function(dbArticle) {
-          console.log(dbArticle);
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
+      res.render("index", articles);
+    })
+    .catch(function(err) {
+      res.json(err);
     });
-
-    res.send("Scrape Complete");
-  });
 });
+
+app.get("/api/scrape", storeInDb);
+
+async function storeInDb(req, res) {
+  let response = await axios.get("http://www.echojs.com/");
+  var $ = cheerio.load(response.data);
+  var numArticles = 0;
+  let rawArticles = $("article h2");
+
+  for (var i = 0; i < rawArticles.length; i++) {
+    var result = {};
+    result.title = $(rawArticles[i])
+      .children("a")
+      .text();
+    result.link = $(rawArticles[i])
+      .children("a")
+      .attr("href");
+    console.log(result);
+    let art = await db.Article.findOne({ title: result.title });
+    console.log(art);
+    if (art === null) {
+      numArticles++;
+      console.log(result);
+      await db.Article.create(result);
+    }
+  }
+  console.log(numArticles);
+  res.send({ number: numArticles });
+}
 
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
