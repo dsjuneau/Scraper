@@ -25,7 +25,7 @@ app.get("/", function(req, res) {
   res.render("index");
 });
 
-app.get("/scrape", function(req, res) {
+app.get("/api/scrape", function(req, res) {
   axios.get("http://www.echojs.com/").then(function(response) {
     var $ = cheerio.load(response.data);
     $("article h2").each(function(i, element) {

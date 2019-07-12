@@ -53,3 +53,15 @@ $(document).on("click", "#savenote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
+
+function scrape(event) {
+  event.preventDefault();
+  $.ajax({
+    method: "GET",
+    url: "/api/scrape"
+  }).then(function() {
+    $("#saved").modal("show");
+  });
+}
+
+$("#scrape").on("click", scrape);
