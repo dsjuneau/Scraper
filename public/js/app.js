@@ -22,7 +22,6 @@ function scrape(event) {
     method: "GET",
     url: "/api/scrape"
   }).then(function(res) {
-    console.log(res);
     $("#num-articles").html(res.number);
     $("#saved").modal("show");
   });
@@ -33,6 +32,9 @@ function getNotes() {
     method: "GET",
     url: "/api/articles/" + $(this).attr("data-id")
   }).then(function(res) {
+    if (res.note !== undefined) {
+      $("#note-body").val(res.note.data);
+    }
     $("#note-title").html(res.title);
     $("#note-modal").modal("show");
   });
@@ -41,10 +43,18 @@ function getNotes() {
 function saveNotes() {
   let title = $("#note-title").text();
   let data = { data: $("#note-body").val() };
-  console.log(data);
+
   $.post("/api/articles/" + title, data).then(function(res) {
     $("#note-modal").modal("hide");
-    console.log(res);
+  });
+}
+
+function deleteArticle() {
+  $.ajax({
+    method: "DELETE",
+    url: "/api/articles/" + $(this).attr("data-id")
+  }).then(function(res) {
+    location.reload(true);
   });
 }
 
@@ -54,6 +64,7 @@ $("#saved").on("hidden.bs.modal", function() {
   location.reload(true);
 });
 
-$(".notes").on("click", getNotes);
+$(document).on("click", ".notes", getNotes);
 
 $("#save-changes").on("click", saveNotes);
+$(".delete-article").on("click", deleteArticle);

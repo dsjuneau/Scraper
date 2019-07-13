@@ -51,16 +51,16 @@ async function storeInDb(req, res) {
     result.link = $(rawArticles[i])
       .children("a")
       .attr("href");
-    console.log(result);
+
     let art = await db.Article.findOne({ title: result.title });
-    console.log(art);
+
     if (art === null) {
       numArticles++;
-      console.log(result);
+
       await db.Article.create(result);
     }
   }
-  console.log(numArticles);
+
   res.send({ number: numArticles });
 }
 
@@ -76,9 +76,18 @@ app.get("/api/articles/:id", function(req, res) {
     });
 });
 
+app.delete("/api/articles/:id", function(req, res) {
+  db.Article.deleteOne({ _id: req.params.id })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
 // Route for saving/updating an Article's associated Note
 app.post("/api/articles/:title", function(req, res) {
-  console.log(req.body);
   db.Note.create(req.body)
     .then(function(dbNote) {
       return db.Article.findOneAndUpdate(
