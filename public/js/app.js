@@ -28,8 +28,32 @@ function scrape(event) {
   });
 }
 
+function getNotes() {
+  $.ajax({
+    method: "GET",
+    url: "/api/articles/" + $(this).attr("data-id")
+  }).then(function(res) {
+    $("#note-title").html(res.title);
+    $("#note-modal").modal("show");
+  });
+}
+
+function saveNotes() {
+  let title = $("#note-title").text();
+  let data = { data: $("#note-body").val() };
+  console.log(data);
+  $.post("/api/articles/" + title, data).then(function(res) {
+    $("#note-modal").modal("hide");
+    console.log(res);
+  });
+}
+
 $("#scrape").on("click", scrape);
 
 $("#saved").on("hidden.bs.modal", function() {
   location.reload(true);
 });
+
+$(".notes").on("click", getNotes);
+
+$("#save-changes").on("click", saveNotes);

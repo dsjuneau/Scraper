@@ -65,7 +65,7 @@ async function storeInDb(req, res) {
 }
 
 // Route for grabbing a specific Article by id, populate it with it's note
-app.get("/articles/:id", function(req, res) {
+app.get("/api/articles/:id", function(req, res) {
   db.Article.findOne({ _id: req.params.id })
     .populate("note")
     .then(function(dbArticle) {
@@ -77,11 +77,12 @@ app.get("/articles/:id", function(req, res) {
 });
 
 // Route for saving/updating an Article's associated Note
-app.post("/articles/:id", function(req, res) {
+app.post("/api/articles/:title", function(req, res) {
+  console.log(req.body);
   db.Note.create(req.body)
     .then(function(dbNote) {
       return db.Article.findOneAndUpdate(
-        { _id: req.params.id },
+        { title: req.params.title },
         { note: dbNote._id },
         { new: true }
       );
