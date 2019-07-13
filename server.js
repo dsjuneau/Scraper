@@ -24,10 +24,12 @@ mongoose.connect(MONGODBURI, {
 // Completed route for loading the initial page and any saved database items
 app.get("/", function(req, res) {
   db.Article.find({})
+    .populate("note")
     .then(function(dbArticle) {
       var articles = {
         articles: dbArticle
       };
+
       res.render("index", articles);
     })
     .catch(function(err) {

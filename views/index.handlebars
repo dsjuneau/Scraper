@@ -67,6 +67,9 @@
     <li class="list-group-item"> <a href="{{link}}">
             {{title}}
         </a>
+        {{#if note.data}}
+        <p>Notes: {{note.data}}</p>
+        {{/if}}
         <div class="d-flex justify-content-end">
             <button type="button" class="notes btn btn-outline-info btn-sm mx-3" data-id="{{_id}}">Notes</button>
             <button type="button" class="delete-article btn btn-outline-danger btn-sm" data-id="{{_id}}">Delete</button>

@@ -46,6 +46,7 @@ function saveNotes() {
 
   $.post("/api/articles/" + title, data).then(function(res) {
     $("#note-modal").modal("hide");
+    location.reload(true);
   });
 }
 
@@ -64,7 +65,7 @@ $("#saved").on("hidden.bs.modal", function() {
   location.reload(true);
 });
 
-$(document).on("click", ".notes", getNotes);
+$(".notes").on("click", getNotes);
 
 $("#save-changes").on("click", saveNotes);
 $(".delete-article").on("click", deleteArticle);
